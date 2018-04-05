@@ -1,0 +1,179 @@
+<html>
+   <head>
+     
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-1.2.1.js"></script>
+<!-- <script src="opencpu/jquery-1.10.2.min.js"></script>
+    <script src="opencpu/opencpu-0.4.js"></script> -->
+      <script type="text/javascript">
+	  var imgsrc="";
+		function readURL1(input) {
+			if (document.forms[0] && document.forms[0].elements[0]) {
+		//document.getElementById('blah1').src=document.forms[0].elements[0].value;
+            var reader = new FileReader();
+           reader.onload = function (e) {
+		   imgsrc=e.target.result;
+		   var imgind= imgsrc.indexOf(",");
+		    imgsrc = imgsrc.substring(imgind+1);
+               $('#blah1').attr('src', e.target.result).width(350).height(400);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+			//var imgsrc=input.files[0].convertToBase64(function(base64));
+        }
+    }
+	
+		var imgpath="";
+			function readURL2(input) {
+        if (document.forms[0] && document.forms[0].elements[1]) {
+		//document.getElementById('blah1').src=document.forms[0].elements[0].value;
+		$('#blah1').attr('src', document.forms[0].elements[1].value).width(350).height(400);
+		 imgpath=document.forms[0].elements[1].value;
+            //var reader = new FileReader();
+           //reader.onload = function (e) {
+		  
+               
+           // };
+
+           // reader.readAsDataURL(document.forms[0].elements[1].value);
+			//var imgsrc=input.files[0].convertToBase64(function(base64));
+        }
+    }
+	function callRFunction()
+	{
+	if (imgsrc!="" && imgpath!="")
+	{
+	alert("please select one image only");
+	imgsrc="";
+	imgpath="";
+	document.forms[0].elements[0].value="";
+	document.forms[0].elements[1].value="";
+	$('#blah1').attr('src', '').width(0).height(0);
+	$('#tblView tbody').html('');
+	return false;
+	
+	}
+	$('#tblView tbody').html('');
+		var clientid ="gu2VIEvRiUlY3MQafUyx3q_k7HCA2Dlf0T_P6xaE";
+		var clientsecid="dwA3IF_orgI3kNAeflGLZlJtTqeWdFnwN09MIwMA";
+			Clarifai.initialize({
+				'clientId': clientid,
+				'clientSecret': clientsecid
+			});
+		
+		var token = Clarifai.getToken().then(
+			function(response) {
+				console.log(response);
+				//alert(token)
+			});
+		if (imgsrc!="")
+		{
+		Clarifai.getTagsByImageBytes(imgsrc).then(
+			
+			handleresponse,
+			handleError
+			);
+		}
+		if (imgpath!="")
+		{
+		Clarifai.getTagsByUrl(imgpath).then(
+			
+			handleresponse,
+			handleError
+			);
+		}
+	}
+	function handleresponse(response)
+	{
+	for( i=0; i < response.results[0].result.tag.classes.length; i++)
+	{
+	if(i==0)
+	{
+	
+	$('#tblView').append("<tr><td style='bold:true;'>S.No</td><td style='bold:true;'>Image Tags</td><td style='bold:true;'>Probability</td></tr>");
+	}
+	var count = parseInt(i)+1;
+	$('#tblView').append( "<tr><td>"+count+"</td><td>"+response.results[0].result.tag.classes[i]+"</td><td>"+response.results[0].result.tag.probs[i].toFixed(3)+"</td></tr>" );
+	}
+	//$('#tblView').append( "<tr><td>"+response.results[0].result.tag.classes[0]+"</td></tr>" );
+	//console.log(response.results[0].result.tag.classes);
+	//console.log(response.results[0].result.tag.probs);
+	}
+	function handleError(err)
+	{
+	console.log(err);
+	}
+	
+ //var data = Clarifai.getTagsByUrl('https://samples.clarifai.com/wedding.jpg');.then( -->
+ //$('#tblView').append( "<tr><td>"+_results+"</td></tr>" );
+// );
+  //handleError
+
+  
+	/*var req = ocpu.call("../R/imgpro.R",{
+	  cltID : clientid,
+	  secID : clientsecid,
+	  srcimage : imgsrc
+}, function(output){
+    alert("Standard Deviation equals: " + output);
+});
+ var req = ocpu.call("..//R/imgpro.R", {
+      cltID : clientid,
+	  secID : clientsecid,
+	  srcimage : imgsrc
+    }, function(session){
+      session.getConsole(function(output){
+	  var ind= output.indexOf("probs");
+	  var strdata = output.substring(ind+6).substring(0,output.substring(ind+6).length-2);
+	  $('#tblView').append( "<tr><td>"+strdata+"</td></tr>" );
+        //$("#output code").text(output);
+      });
+    }).fail(function(){
+      alert("Server error: " + req.responseText);
+    });  */     
+
+      </script>
+      
+   </head>
+   
+   <style type="text/css">
+		.navbar2 {
+			font-family: "open_sansregular","Open Sans","Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+			text-align:center;
+		}
+		
+		
+	</style>
+	<body style=" width:90%">
+        <div class="navbar2">
+		<br/>
+		<h1 style="color:#010162;">IMAGE TAGGING</h1></div>
+			
+      <form>
+	  <table align="center">
+	  <tr>
+		<td><span>Choose an Image</span></td>
+		<td><input type='file' onchange="readURL1(this);" /></td>
+	  </tr>
+	  <tr>
+		<td><span>Or</span></td>
+	  </tr>
+	  <tr>
+	  <td><span>Use the URL</span></td>
+	  <td><input type='text' id="txtImgPath" style="width:300px; border-radius:100px;" placeholder="Paste a url here..." onchange="readURL2(this);" /></td>
+	  </tr>
+	  <tr>
+	  <td><img id="blah1" src="#" alt="" />	  
+      </td>
+	  </tr>
+	   <tr><td colspan="2"><input type="button" value="Analyse" onclick="callRFunction();" />
+      </td>
+	  </tr>
+	  </table>
+	  <table id="tblView" style="width:300px;">
+	  </table>
+	  </form>
+      
+   </body>
+</html>

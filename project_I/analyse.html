@@ -1,0 +1,64 @@
+<html>
+   <head>
+      
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+      <script type="text/javascript">
+         function readURL1(input) {
+        if (document.forms[0] && document.forms[0].elements[0]) {
+		//document.getElementById('blah1').src=document.forms[0].elements[0].value;
+            var reader = new FileReader();
+           reader.onload = function (e) {
+               $('#blah1').attr('src', e.target.result).width(150).height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+	function callRFunction()
+	{
+	var text = "sdfgsf";
+	$('#tblView').append( "<tr><td>"+text+"</td></tr>" );
+	//var table = $('#tblView');
+	//var row = table.insertRow(1);
+	//var cell1 = row.insertCell(0);
+	//var cell2 = row.insertCell(1);
+	//cell1.innerHTML = "NEW CELL1";
+	//cell2.innerHTML = "NEW CELL2";
+}
+         
+      </script>
+      
+   </head>
+   
+   <body>
+         
+      <form>
+	  <table>
+	  <tr>
+	  <td><span>Browse for image</span></td>
+	  <td><input type='file' onchange="readURL1(this);" />
+	  </td>
+	  </tr>
+	  <tr>
+	  <td>
+		<img id="blah1" src="#" alt="" />	  
+      </td>
+	  </tr>
+	  
+       <tr>  
+	   <td colspan="2">
+	   <input type="button" value="Analyse" onclick="callRFunction();" />
+      </td>
+	  </tr>
+	  </table>
+	  <table id="tblView">
+	  <tr>
+	  <td>Tags	  
+	  </td>
+	  </tr>
+	  </table>
+	  </form>
+      
+   </body>
+</html>
